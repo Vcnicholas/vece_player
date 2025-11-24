@@ -1,46 +1,86 @@
 import 'package:get/get.dart';
+import 'package:screen_brightness/screen_brightness.dart';
+import 'package:volume_controller/volume_controller.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:io';
 
 class VideoViewModel extends GetxController {
   late VideoPlayerController videoController;
+  final File videoFile;
   bool isPlaying = false;
-  bool isFullscreen = false;
+  bool showControls = true;
+  double brightness = 0.5;
+  double volume = 0.5;
+  bool showFeedback = false;
+  String feedbackType = ""; // 'brightness' or 'volume'
+
+  VideoViewModel(this.videoFile);
 
   @override
   void onInit() {
     super.onInit();
-    videoController = VideoPlayerController.asset(
-      'assets/videos/sample.mp4',
-    )..initialize().then((_) {
-      update(); // Refresh UI when initialized
-    });
+    videoController = VideoPlayerController.file(videoFile)
+      ..initialize().then((_) {
+        update();
+      });
+
+    _initValues();
+  }
+
+  Future<void> _initValues() async {
+    brightness = await ScreenBrightness().current;
+    volume = await VolumeController().getVolume();
+    update();
   }
 
   void togglePlay() {
-    if (isPlaying) {
+    if (videoController.value.isPlaying) {
       videoController.pause();
+      isPlaying = false;
     } else {
       videoController.play();
+      isPlaying = true;
     }
-    isPlaying = !isPlaying;
     update();
   }
 
-  void seekForward() async {
-    final newPos = videoController.value.position + const Duration(seconds: 10);
-    await videoController.seekTo(newPos);
+  void toggleControlsVisibility() {
+    showControls = !showControls;
     update();
   }
 
-  void seekBackward() async {
-    final newPos = videoController.value.position - const Duration(seconds: 10);
-    await videoController.seekTo(newPos < Duration.zero ? Duration.zero : newPos);
-    update();
+  void seekForward() {
+    final newPosition = videoController.value.position + const Duration(seconds: 10);
+    videoController.seekTo(newPosition);
   }
 
-  void toggleFullscreen() {
-    isFullscreen = !isFullscreen;
+  void seekBackward() {
+    final newPosition = videoController.value.position - const Duration(seconds: 10);
+    videoController.seekTo(newPosition);
+  }
+
+  Future<void> adjustBrightness(double dy) async {
+    final delta = -dy / 300; // swipe up = increase
+    brightness = (brightness + delta).clamp(0.0, 1.0);
+    await ScreenBrightness().setScreenBrightness(brightness);
+    _showFeedback("brightness");
+  }
+
+  Future<void> adjustVolume(double dy) async {
+    final delta = -dy / 300;
+    volume = (volume + delta).clamp(0.0, 1.0);
+    VolumeController().setVolume(volume);
+    _showFeedback("volume");
+  }
+
+  void _showFeedback(String type) {
+    feedbackType = type;
+    showFeedback = true;
     update();
+    Future.delayed(const Duration(seconds: 1), () {
+      showFeedback = false;
+      update();
+    });
   }
 
   @override

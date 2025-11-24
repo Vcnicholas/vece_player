@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:vece_player/presentation/video_list/video_list_vm.dart';
+import 'package:vece_player/utils/colors.dart';
+import 'package:vece_player/utils/widget_extensions.dart';
+import '../../utils/constants.dart';
 import '../video_player_console/video_player_console.dart';
 
 class VideoListScreen extends StatelessWidget {
@@ -13,8 +17,8 @@ class VideoListScreen extends StatelessWidget {
       init: VideoListViewModel(),
       builder: (controller) {
         if (controller.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+          return Scaffold(
+            body: Center(child: customProgressIndicator()),
           );
         }
 
@@ -28,59 +32,159 @@ class VideoListScreen extends StatelessWidget {
             ),
           );
         }
-
+        // GridView.builder(
+        //   padding: const EdgeInsets.all(8),
+        //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        //     crossAxisCount: 3,
+        //     mainAxisSpacing: 8,
+        //     crossAxisSpacing: 8,
+        //   ),
+        //   itemCount: controller.videos.length,
+        //   itemBuilder: (context, index) {
+        //     final video = controller.videos[index];
+        //
+        //     return FutureBuilder(
+        //       future: video.asset.thumbnailDataWithSize(
+        //         const ThumbnailSize(200, 200),
+        //       ),
+        //       builder: (context, snapshot) {
+        //         if (!snapshot.hasData) {
+        //           return const Center(child: CircularProgressIndicator());
+        //         }
+        //         return GestureDetector(
+        //           onTap: () async {
+        //             final file = await video.asset.file;
+        //             if (file != null) {
+        //               Navigator.push(context, MaterialPageRoute(builder:
+        //               (context) => VideoPlayerScreen(
+        //                 videoFile: file,
+        //               )));
+        //               //Get.to(() => VideoPlayerScreen(videoFile: file));
+        //             }
+        //           },
+        //           child: Stack(
+        //             fit: StackFit.expand,
+        //             children: [
+        //               Image.memory(snapshot.data!, fit: BoxFit.cover),
+        //               const Align(
+        //                 alignment: Alignment.center,
+        //                 child: Icon(
+        //                   Icons.play_circle_fill,
+        //                   color: Colors.white,
+        //                   size: 40,
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         );
+        //       },
+        //     );
+        //   },
+        // ),
         return Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            backgroundColor: Colors.black,
-            title: const Text("Your Videos"),
-          ),
-          body: GridView.builder(
-            padding: const EdgeInsets.all(8),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
+          body: Padding(
+            padding: EdgeInsets.only(
+              left: 10.w,
+              right: 10.w,
+              top: 60.h,
             ),
-            itemCount: controller.videos.length,
-            itemBuilder: (context, index) {
-              final video = controller.videos[index];
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-              return FutureBuilder(
-                future: video.asset.thumbnailDataWithSize(
-                  const ThumbnailSize(200, 200),
+                // ---------- FIXED TITLE (does NOT scroll) ----------
+                AppText(
+                  'Vece Player',
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColor.white
+                      : AppColor.textColor,
+                  size: 18.sp,
                 ),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  return GestureDetector(
-                    onTap: () async {
-                      final file = await video.asset.file;
-                      if (file != null) {
-                        Get.to(() => VideoPlayerScreen(videoFile: file));
-                      }
-                    },
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.memory(snapshot.data!, fit: BoxFit.cover),
-                        const Align(
-                          alignment: Alignment.center,
-                          child: Icon(
-                            Icons.play_circle_fill,
-                            color: Colors.white,
-                            size: 40,
-                          ),
+
+                10.h.sbH,
+
+                // ---------- SCROLLING VIDEOS ONLY ----------
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: controller.videos.length,
+                    itemBuilder: (context, index) {
+                      final video = controller.videos[index];
+
+                      return FutureBuilder(
+                        future: video.asset.thumbnailDataWithSize(
+                          const ThumbnailSize(200, 200),
                         ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Padding(
+                              padding: EdgeInsets.all(20.sp),
+                              child: Center(child: customProgressIndicator()),
+                            );
+                          }
+
+                          return GestureDetector(
+                            onTap: () async {
+                              final file = await video.asset.file;
+                              if (file != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        VideoPlayerScreen(videoFile: file, title: video.title!,),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 80,
+                                    width: 70,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20.r),
+                                    ),
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                          child: Image.memory(
+                                            snapshot.data!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        const Align(
+                                          alignment: Alignment.center,
+                                          child: Icon(
+                                            Icons.play_circle_fill,
+                                            color: Colors.white,
+                                            size: 40,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  20.w.sbW,
+                                  Expanded(
+                                    child: AppText(video.title ?? "Untitled Video"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         );
+
+
       },
     );
   }

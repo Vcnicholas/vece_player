@@ -1,13 +1,12 @@
-import 'package:bucx/utils/pallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../data/services/navigation_service.dart';
-import '../data/services/storage-service.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../core/services/navigation_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../locator.dart';
-import 'font_manager.dart';
+import 'colors.dart';
 
-final StorageService storageService = getIt<StorageService>();
+
 final NavigationService navigationService = getIt<NavigationService>();
 
 List<T> map<T>(List list, Function handler) {
@@ -75,27 +74,35 @@ class AppText extends StatelessWidget {
     return Text(
       text,
       style: style ??
-          TextStyle(
-            color: isHeader == true
-                ? const Color(0xFF585858)
-                : isSubHeader == true
-                    ? const Color(0xFF999999)
-                    : color?? AppColor.textColor,
+          GoogleFonts.poppins(
             fontSize: size ?? 14.sp,
-            fontFamily: family ?? FontConstants.fontFamily,
-            height: height,
-            wordSpacing: wordSpacing,
+            fontWeight: weight??
+                (isBold == true?
+                FontWeight.w700:
+                isSubHeader == true?
+                FontWeight.w500:
+                FontWeight.w500),
             letterSpacing: letterSpacing,
-            fontWeight: weight ??
-                (isBold == true
-                    ? FontWeight.w700
-                    : isSubHeader == true
-                        ? FontWeight.w500
-                        : FontWeight.w500),
-          ),
-      textAlign: align ?? TextAlign.start,
-      selectionColor: AppColor.warningColor.withOpacity(0.5),
-      maxLines: maxLine,
+            wordSpacing: wordSpacing,
+            height: height,
+            color: color ??
+                AppColor.textColor,
+            locale: locale,
+
+            // textAlign: align ?? TextAlign.start,
+            // selectionColor: AppColor.warningColor.withOpacity(0.5),
+            // maxLines: maxLine,
+          )
+          // TextStyle(
+          //   color: isHeader == true
+          //       ? const Color(0xFF585858)
+          //       : isSubHeader == true
+          //           ? const Color(0xFF999999)
+          //           : color?? AppColor.textColor,
+          //   fontSize: size ?? 14.sp,
+          //   fontFamily: family ?? FontConstants.fontFamily,
+          // ),
+
     );
   }
 }

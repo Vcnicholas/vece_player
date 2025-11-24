@@ -7,30 +7,35 @@ plugins {
 
 android {
     namespace = "com.vece.vece_player"
-    compileSdk = flutter.compileSdkVersion
+
+    // ✅ Explicitly set this to at least 34 (Flutter might not override it for plugins)
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     defaultConfig {
         applicationId = "com.vece.vece_player"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        // 🔹 Use Java 17 for latest plugin compatibility
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = "17"
     }
 
     buildTypes {
         getByName("release") {
-            // TODO: Replace with real signing config before publishing
+            // ⚠️ Replace with your real signing key before publishing
+            isShrinkResources = false
             signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
         }
     }
 }
@@ -40,6 +45,6 @@ flutter {
 }
 
 dependencies {
-    implementation("androidx.media3:media3-exoplayer:1.4.1")
-    implementation("androidx.media3:media3-ui:1.4.1")
+    implementation("androidx.media3:media3-exoplayer:1.8.0")
+    implementation("androidx.media3:media3-ui:1.8.0")
 }

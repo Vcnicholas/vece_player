@@ -115,7 +115,7 @@ class AppThemeController extends GetxController {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: const ButtonStyle().copyWith(
           backgroundColor: WidgetStateProperty.all(AppColor.primaryColor),
-          foregroundColor: WidgetStateProperty.all(AppColor.whiteColor),
+          foregroundColor: WidgetStateProperty.all(AppColor.white),
           elevation: WidgetStateProperty.all(0.0),
         ),
       ),
@@ -234,7 +234,7 @@ class AppThemeController extends GetxController {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: const ButtonStyle().copyWith(
           backgroundColor: WidgetStateProperty.all(AppColor.primaryColor),
-          foregroundColor: WidgetStateProperty.all(AppColor.whiteColor),
+          foregroundColor: WidgetStateProperty.all(AppColor.white),
           elevation: WidgetStateProperty.all(0.0),
         ),
       ),
