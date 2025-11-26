@@ -25,62 +25,13 @@ class VideoListScreen extends StatelessWidget {
         if (controller.videos.isEmpty) {
           return const Scaffold(
             body: Center(
-              child: Text(
+              child: AppText(
                 "No videos found on your device.",
-                style: TextStyle(color: Colors.white),
               ),
             ),
           );
         }
-        // GridView.builder(
-        //   padding: const EdgeInsets.all(8),
-        //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        //     crossAxisCount: 3,
-        //     mainAxisSpacing: 8,
-        //     crossAxisSpacing: 8,
-        //   ),
-        //   itemCount: controller.videos.length,
-        //   itemBuilder: (context, index) {
-        //     final video = controller.videos[index];
-        //
-        //     return FutureBuilder(
-        //       future: video.asset.thumbnailDataWithSize(
-        //         const ThumbnailSize(200, 200),
-        //       ),
-        //       builder: (context, snapshot) {
-        //         if (!snapshot.hasData) {
-        //           return const Center(child: CircularProgressIndicator());
-        //         }
-        //         return GestureDetector(
-        //           onTap: () async {
-        //             final file = await video.asset.file;
-        //             if (file != null) {
-        //               Navigator.push(context, MaterialPageRoute(builder:
-        //               (context) => VideoPlayerScreen(
-        //                 videoFile: file,
-        //               )));
-        //               //Get.to(() => VideoPlayerScreen(videoFile: file));
-        //             }
-        //           },
-        //           child: Stack(
-        //             fit: StackFit.expand,
-        //             children: [
-        //               Image.memory(snapshot.data!, fit: BoxFit.cover),
-        //               const Align(
-        //                 alignment: Alignment.center,
-        //                 child: Icon(
-        //                   Icons.play_circle_fill,
-        //                   color: Colors.white,
-        //                   size: 40,
-        //                 ),
-        //               ),
-        //             ],
-        //           ),
-        //         );
-        //       },
-        //     );
-        //   },
-        // ),
+
         return Scaffold(
           body: Padding(
             padding: EdgeInsets.only(
@@ -168,7 +119,7 @@ class VideoListScreen extends StatelessWidget {
                                   ),
                                   20.w.sbW,
                                   Expanded(
-                                    child: AppText(video.title ?? "Untitled Video"),
+                                    child: AppText(controller.shortenTitle(video.title ?? "Untitled Video", max: 35)),
                                   ),
                                 ],
                               ),

@@ -28,24 +28,10 @@ class VideoPlayerScreen extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: Colors.black,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              40.h.sbH,
-              Row(
-                children: [
-                  IconButton(onPressed: (){
-                    navigationService.goBack();
-                  }, icon: Icon(Icons.arrow_back_ios_new_rounded),
-                  color: Theme.of(context).brightness == Brightness.dark?
-                    AppColor.white:
-                    AppColor.blackColor,
-                  ),
-                  AppText(title)
-                ],
-              ),
-              15.h.sbH,
               GestureDetector(
                 onVerticalDragUpdate: (details) {
                   final width = MediaQuery.of(context).size.width;
@@ -120,7 +106,7 @@ class VideoPlayerScreen extends StatelessWidget {
                                   size: 40,
                                 ),
                                 const SizedBox(height: 10),
-                                Text(
+                                AppText(
                                   controller.feedbackType == "brightness"
                                       ? "Brightness: ${(controller.brightness * 100).toInt()}%"
                                       : "Volume: ${(controller.volume * 100).toInt()}%",
@@ -147,6 +133,37 @@ class VideoPlayerScreen extends StatelessWidget {
                         ),
                       ),
 
+                    /// Show Title and Back Button
+                    if (controller.showControls)
+                      Positioned(top: 0.sp,
+                        left: 0.sp,
+                        right: 0.sp,
+                        child: AppBar(
+                          backgroundColor: 
+                          Theme.of(context).brightness == Brightness.dark?
+                          AppColor.blackColor.withOpacity(.1):
+                          AppColor.white.withOpacity(.9),
+                        leading:
+                        Row(
+                          children: [
+                            IconButton(onPressed: (){
+                              navigationService.goBack();
+                            }, icon: Icon(Icons.arrow_back_ios_new_rounded),
+                              color: Theme.of(context).brightness == Brightness.dark?
+                              AppColor.white:
+                              AppColor.blackColor,
+                            ),
+                          ],
+                        ),
+                        title:
+                        Row(
+                          children: [
+                            AppText(controller.shortenTitle(title, max: 40),
+                            )
+                          ],
+                        ),
+                                            ),
+                      ),
                     /// Bottom Controls
                     if (controller.showControls)
                       Positioned(
@@ -176,11 +193,11 @@ class VideoPlayerScreen extends StatelessWidget {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
+                                    AppText(
                                       _formatDuration(value.position),
                                       style: const TextStyle(color: Colors.white70, fontSize: 13),
                                     ),
-                                    Text(
+                                    AppText(
                                       _formatDuration(value.duration),
                                       style: const TextStyle(color: Colors.white70, fontSize: 13),
                                     ),

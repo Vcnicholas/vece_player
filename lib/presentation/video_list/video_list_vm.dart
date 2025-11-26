@@ -39,4 +39,14 @@ class VideoListViewModel extends GetxController {
     isLoading = false;
     update();
   }
+  String shortenTitle(String text, {int max = 20}) {
+    if (text.length <= max) return text;
+
+    // Show first 10 characters and last 7 characters
+    const int startCount = 15;
+    const int endCount = 12;
+
+    return "${text.substring(0, startCount)}...${text.substring(text.length - endCount)}";
+  }
+
 }
