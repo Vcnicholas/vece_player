@@ -87,8 +87,8 @@ class VideoViewModel extends GetxController {
     if (text.length <= max) return text;
 
     // Show first 10 characters and last 7 characters
-    const int startCount = 10;
-    const int endCount = 7;
+    const int startCount = 15;
+    const int endCount = 10;
 
     return "${text.substring(0, startCount)}...${text.substring(text.length - endCount)}";
   }

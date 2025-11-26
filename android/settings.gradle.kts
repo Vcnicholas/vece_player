@@ -25,5 +25,3 @@ plugins {
 }
 
 include(":app")
-
-apply(from = "flutter-plugins.gradle.kts")
