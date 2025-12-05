@@ -1,11 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-import '../../base/base.vm.dart';
-import '../accounts/account_details.dart';
-import '../cards/cards.dart';
-import '../home.dart';
-import '../profiles/profiles.dart';
+import '../presentation/video_list/video_list.dart';
 
 
 class BottomNavViewModel extends BaseViewModel {
@@ -14,10 +10,7 @@ class BottomNavViewModel extends BaseViewModel {
   // UserResponse? userResponse;
 
   List<Widget> children = [
-    Home(),
-    Cards(),
-    AccountDetails(),
-    const Profiles(),
+    VideoListScreen()
   ];
 
   //Pops the app back
